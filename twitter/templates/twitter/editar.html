@@ -1,0 +1,57 @@
+{% extends 'twitter/layout.html' %}
+
+{% block content %}
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <div id="main" class="container-fluid d-flex">
+        <div class="">
+            <div id="inputTweetArea" class="tweet-wrap2">
+                <div class="d-flex">
+                    <div class="col-xs">
+                        <!-- Image forms
+                        <img src="{{ request.user.profile.image.url }}" alt="" class="avator">
+                        <!-- Formulario -->
+                    </div>
+
+                    <!-- Formulario -->
+                    <form class="col pr-0" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        {% if messages %}
+                        <ul class="messages">
+                            {% for message in messages %}
+                            <script>
+                            Swal.fire({
+                                title: "{{ message.tags }}",
+                                text: "{{ message }}",
+                                icon: "{% if message.tags == 'success' %}success{% else %}error{% endif %}"
+                            });
+                        </script>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                        <div class="input-wrapper">
+                            <label>Nombre</label>
+                            {{ u_form.first_name }}
+                        </div>
+                        <div class="input-wrapper">
+                            <label for="user-name-id">Username</label>
+                            {{ u_form.username }}
+                        </div>
+                        <div class="input-wrapper">
+                            <label>Descripcion</label>
+                            {{ p_form.bio }}
+                        </div>
+                        {% comment %} <div class="input-wrapper"> {% endcomment %}
+                            {{ p_form.image }}
+                        </div>
+
+                        <button class="twitter-btn">Actualizar</button>
+                    </form>
+                    <!-- Formulario -->
+                    
+                </div>
+            </div>
+        </div>
+        <!-- End Center -->
+    </div>
+
+{% endblock content %}

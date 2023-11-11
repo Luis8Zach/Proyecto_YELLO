@@ -1,0 +1,53 @@
+{% extends 'twitter/layout.html' %}
+
+{% block content %}
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+<body class="login-page">
+
+    <div class="twitter-login-box">
+        <header>
+            <img src="../../static/img/yello LOGO.png" alt="twitter logo">
+            <h1>Inicia Sesión</h1>
+        </header>
+
+        <form method="post">
+            {% csrf_token %}
+            {# Aquí se mostrarán los mensajes de éxito o error #}
+            {% if messages %}
+                <ul class="messages">
+                    {% for message in messages %}
+                    <script>
+                    Swal.fire({
+                        title: "{{ message.tags }}",
+                        text: "{{ message }}",
+                        icon: "{% if message.tags == 'success' %}success{% else %}error{% endif %}"
+                    });
+                </script>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+            <div class="input-wrapper">
+                <label for="user-name-id">Username</label>
+                {{ form.username }}
+            </div>
+
+            <div class="input-wrapper">
+                <label for="password-id">Password</label>
+                {{ form.password }}
+            </div>
+            {% if form.errors %}
+            <p>Tu usuario o contraseña no es correcta .</p>
+            {% endif %}
+
+            <button class="twitter-btn">Log in</button>
+        </form>
+
+
+
+        <div class="footer">
+            <p><a href="{% url "password_reset" %}">Olvidaste tu contraseña?</a></p>. 
+            <a href="http://127.0.0.1:8000/register/">Registrate en YELLO</a>
+        </div>
+
+    </div>
+{% endblock content %}

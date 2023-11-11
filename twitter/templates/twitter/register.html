@@ -1,0 +1,60 @@
+{% extends 'twitter/layout.html' %}
+
+{% block content %}
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+<body class="login-page">
+    <div class="twitter-login-box">
+        <header>
+            <img src="../../static/img/yello LOGO.png" alt="twitter logo">
+            <h1>Registrate en YELLO!</h1>
+        </header>
+
+        <form method="post">
+            {% csrf_token %}
+            {# Aquí se mostrarán los mensajes de éxito o error #}
+            {% if messages %}
+                <ul class="messages">
+                    {% for message in messages %}
+                    <script>
+                    Swal.fire({
+                        title: "{{ message.tags }}",
+                        text: "{{ message }}",
+                        icon: "{% if message.tags == 'success' %}success{% else %}error{% endif %}"
+                    });
+                </script>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+            <div class="input-wrapper">
+                <label for="user-name-id">First Name</label>
+                {{ form.first_name }}
+            </div>
+            <div class="input-wrapper">
+                <label for="user-name-id">Username</label>
+                {{ form.username }}
+            </div>
+            <div class="input-wrapper">
+                <label for="user-name-id">Email</label>
+                {{ form.email }}
+            </div>
+
+            <div class="input-wrapper">
+                <label for="password-id">Password</label>
+                {{ form.password1 }}
+            </div>
+            <div class="input-wrapper">
+                <label for="password-id">Confirm Password</label>
+                {{ form.password2 }}
+            </div>
+
+            <button class="twitter-btn">Registrarse</button>
+        </form>
+
+        <div class="footer">
+            <a href="http://127.0.0.1:8000/login/">¿Ya tienes una cuenta? Login</a>
+        </div>
+
+    </div>
+</body>
+
+{% endblock content %}
