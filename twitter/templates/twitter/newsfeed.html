@@ -4,6 +4,8 @@
 
     <div id="main" class="container-fluid d-flex">
         <script src="//cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+       
+
         <!-- Barra Izquierda -->
         <div class="sidebar m-5 d-none d-md-block">
             <div class="">
@@ -50,9 +52,13 @@
                     </div>
 
                     <!-- Formulario -->
-                    <form class="col pr-0" method="post">
+                    <form class="col pr-0" method="post" enctype="multipart/form-data">
                         {% csrf_token %}
-                        {{ form.content }}
+                        {{ form.text }}
+                        {{ form.image }}
+                        
+                        <!-- Otras partes del formulario... -->
+                        
                         <div class="container d-flex" style="padding: 1rem 0 0 0;">
                             <div id="leftBtn">
                                 <div id="charBadge" class="badge badge-pill badge-primary ml-2"
@@ -60,13 +66,12 @@
                                     <div id="charCountArea">140</div>
                                 </div>
                             </div>
-
                             <div id="rightBtn">
-                                <button class="btn rounded-pill"
-                                    style="width: 100%;">Tweet</button>
+                                <button class="btn rounded-pill" style="width: 100%;">Tweet</button>
                             </div>
                         </div>
                     </form>
+                    
                     <!-- Formulario -->
 
                 </div>
@@ -80,15 +85,25 @@
                 <!-- FOR LOOP HERE -->
                 <div class="tweet-wrap" style="border-radius:20px">
                     <div class="tweet-header">
-                        <img src="{{ post.user.profile.image.url }}"
-                            alt="" class="avator">
+                        <img src="{{ post.user.profile.image.url }}" alt="" class="avator">
                         <div class="tweet-header-info">
                             <a href="{% url 'profile' post.user %}">
-                            {{ post.user.first_name }} 
+                                {{ post.user.first_name }} 
                             </a>
                             <span>@{{ post.user }}</span><span>{{ post.timestamp|naturaltime }}
                             </span>
-                            <p>{{ post.content }}</p>
+                            {% if post.text %}
+                                <p>{{ post.text }}</p>
+                            {% endif %}
+        
+                            <!-- Verificación y muestra de la imagen -->
+                            {% if post.image %}
+                            <div class="text-center">
+                                <div class="tweet-wrop" style="border-radius:20px">
+                                <img src="{{ post.image.url }}" alt="Post Image" style="max-width: 70%; height: auto; border-radius: 10px;">
+                                </div>
+                            </div>
+                            {% endif %}
                         </div>
                     </div>
                     <div class="tweet-info-counts">
@@ -119,20 +134,59 @@
                         </button>
                             <div class="retweet-count"> </div>
                         </div>
-
-                        <div class="likes">
-                            <button style="background: white; border: none;"> 
-                            <svg class="feather feather-heart sc-dnqmqq jxshSx" xmlns="http://www.w3.org/2000/svg"
-                                width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                                <path
-                                    d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z">
-                                </path>
-                            </svg>
+                             <!-- likes -->
+                        <form action="{% url 'like_post' post.id %}" method="post" style="display: inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="like-btn" style="background: white; border: none;">
+                                <svg class="feather feather-heart sc-dnqmqq jxshSx" xmlns="http://www.w3.org/2000/svg"
+                                    width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                    <path
+                                        d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z">
+                                    </path>
+                                  
+                                </svg>
                             </button>
-                            <div class="likes-count"> </div>
-                        </div>
+                            
+                        </form>
+                        <path
+                        >
+                        <p> {{post.Cantidad_likes}}  </p>
+                    </path>
+                        
+                        
+                      
+            
+                        <!-- Agrega esta función dentro de tu bloque de script -->
+                        <script>
+                            $(document).ready(function () {
+                                $(".like-btn").click(function (e) {
+                                    e.preventDefault();  // Evitar que el formulario se envíe automáticamente
+                        
+                                    var post_id = $(this).closest("form").data("post-id");
+                                    var button = $(this); // Guardar una referencia al botón
+                        
+                                    $.ajax({
+                                        type: "POST",
+                                        url: "/like/" + post_id + "/",
+                                        data: $(this).closest("form").serialize(),
+                                        success: function (data) {
+                                            // Actualizar el recuento de likes
+                                            $("#likes-count-" + post_id).text(data.likes);
+                        
+                                            // Cambiar la apariencia del botón
+                                            button.toggleClass("liked");
+                                        },
+                                        error: function () {
+                                            console.log("Error al enviar solicitud de like.");
+                                        }
+                                    });
+                                });
+                            });
+                        </script>
+                        
 
+                        
                         <!-- DELETE -->
                         {% if request.user == post.user %}
                         <div class="trash">
@@ -167,3 +221,4 @@
         </div>
     </div>
 {% endblock content %}
+

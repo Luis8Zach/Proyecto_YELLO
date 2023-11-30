@@ -64,6 +64,17 @@ img {
   border-bottom: 1px solid #e6ecf0;
   border-top: 1px solid #e6ecf0;
 }
+.tweet-wrop {
+  max-width: 200px;
+  background: #424040;
+  margin: 0 auto;
+  margin-top: 50px;
+  border-radius: 3px;
+  padding: 30px;
+  border-bottom: 1px solid #e6ecf0;
+  border-top: 1px solid #e6ecf0;
+}
+
 
 .tweet-header {
   display: flex;
@@ -228,5 +239,20 @@ a:link {
     text-decoration: none;
 }
 
+/* Ejemplo de estilos CSS para limitar el tamaño de las imágenes */
+.tweet-header-info img {
+  max-width: 100%;
+  max-height: 200px; /* Ajusta según tus preferencias */
+  border-radius: 10px; /* Para darle un contorno redondeado */
+}
 
+/* Estilos adicionales para el contorno bonito */
+.tweet-header-info img {
+  border: 2px solid #ddd; /* Color del borde */
+  border-radius: 10px; /* Redondear las esquinas */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra suave */
+}
 
+.like-btn.liked svg {
+  color: rgb(47, 0, 255);  /* Cambia el color a tu gusto */
+}

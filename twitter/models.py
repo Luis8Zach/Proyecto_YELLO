@@ -1,10 +1,13 @@
+from django import forms
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
+from django.db import models
+
 
 class Profile(models.Model):
 	user = models.OneToOneField(User, on_delete=models.CASCADE)
-	bio = models.CharField(default='Hola, twitter', max_length=100)
+	bio = models.CharField(default='Hola, LLEYO', max_length=100)
 	image = models.ImageField(default='default.png')
 
 	def __str__(self):
@@ -22,16 +25,29 @@ class Profile(models.Model):
 
 
 
+
+
+    
 class Post(models.Model):
-	timestamp = models.DateTimeField(default=timezone.now)
-	content = models.TextField()
-	user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='posts')
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    text = models.TextField()
+    image = models.ImageField(upload_to='post_images/', blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    likes = models.ManyToManyField(User, related_name='post_likes', blank=True)
+    dislikes = models.ManyToManyField(User, related_name='post_dislikes', blank=True)
+    
+   
 
-	class Meta:
-		ordering = ['-timestamp']
+    class Meta:
+        ordering = ['-created_at']
 
-	def __str__(self):
-		return self.content
+    def __str__(self):
+        return self.text
+    
+    def Cantidad_likes(self):
+        return self.likes.count()
+        
+
 
 class Relationship(models.Model):
 	from_user = models.ForeignKey(User, related_name='relationships', on_delete=models.CASCADE)
@@ -41,8 +57,17 @@ class Relationship(models.Model):
 		return f'{self.from_user} to {self.to_user}'
 
 
+class SocialComment(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    post = models.ForeignKey('Post', on_delete=models.CASCADE, related_name='Socialcomments')
+    text = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
 
-
+    def __str__(self):
+        return f'Comentario de {self.user.username} en {self.post}'
+    
+    class Meta:
+        ordering = ['-created_at']
 
 
 

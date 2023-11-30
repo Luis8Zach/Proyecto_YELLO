@@ -48,14 +48,21 @@
             {% for post in posts %}
             <div id="tweetCards">
                 <!-- FOR LOOP HERE -->
-                <div class="tweet-wrap" style="border-radius:20px">
+                <div class="tweet-wrap" style="border-radius:10px">
                     <div class="tweet-header">
                         <img src="{{ post.user.profile.image.url }}"
                             alt="" class="avator">
                         <div class="tweet-header-info">
                             {{ post.user.first_name }} <span>@{{ post.user }}</span><span>{{ post.timestamp|naturaltime }}
                             </span>
-                            <p>{{ post.content }}</p>
+                            <p>{{ post.text }}</p>
+                            
+                            {% if post.image %}
+                                <div class="tweet-wrap" style="border-radius:10px">
+                                <img src="{{ post.image.url }}" alt="Post Image">
+                                </div>
+                            {% endif %}
+                             
                         </div>
                     </div>
                     <div class="tweet-info-counts">

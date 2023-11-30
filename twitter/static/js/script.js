@@ -37,4 +37,3 @@ let countChar = () => {
 textArea.addEventListener('input', countChar);
 
 
-

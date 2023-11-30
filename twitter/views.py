@@ -1,27 +1,45 @@
 from django.contrib.auth import login
 from django.shortcuts import render, redirect
+from django.views.generic.base import View  # Agrega esta línea
 from .models import Profile, Post, Relationship
 from .forms import UserRegisterForm, PostForm, ProfileUpdateForm, UserUpdateForm
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.shortcuts import render, redirect
+from .forms import PostForm
+from .models import Post
+from django.shortcuts import render, get_object_or_404
+from django.contrib.auth.models import User
+from .models import Post
+from django.http import HttpResponseRedirect, HttpResponse
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
+from django.http import JsonResponse
+
+
+# Resto del código...
 
 
 @login_required
 def home(request):
-	posts = Post.objects.all()
-	if request.method == 'POST':
-		form = PostForm(request.POST)
-		if form.is_valid():
-			post = form.save(commit=False)
-			post.user = request.user
-			post.save()
-			return redirect('home')
-	else:
-		form = PostForm()
+    posts = Post.objects.all()
 
-	context = {'posts':posts, 'form' : form }
-	return render(request, 'twitter/newsfeed.html', context)
+    if request.method == 'POST':
+        form = PostForm(request.POST, request.FILES)
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.user = request.user
+            post.save()
+            return redirect('home')
+    else:
+        form = PostForm()
+
+    # Agrega esta línea para obtener la cantidad de likes de cada post
+    post_likes = [post.Cantidad_likes() for post in posts]
+
+    context = {'posts': posts, 'form': form, 'post_likes': post_likes}
+    return render(request, 'twitter/newsfeed.html', context)
 
 
 def register(request):
@@ -50,11 +68,12 @@ def delete(request, post_id):
 	return redirect('home')
 
 
+
+
 def profile(request, username):
-	user = User.objects.get(username=username)
-	posts = user.posts.all()
-	context = {'user':user, 'posts':posts}
-	return render(request, 'twitter/profile.html', context)
+    user = get_object_or_404(User, username=username)
+    posts = Post.objects.filter(user=user)
+    return render(request, 'twitter/profile.html', {'user': user, 'posts': posts})
 
 @login_required
 def editar(request):
@@ -94,17 +113,22 @@ def unfollow(request, username):
 	rel.delete()
 	return redirect('home')
 
+@login_required
+def like_post(request, post_id):
+    post = get_object_or_404(Post, id=post_id)
+    if request.user in post.likes.all():
+        post.likes.remove(request.user)
+    else:
+        post.likes.add(request.user)
+    post.save()
+    return redirect('home')
 
-
-
-
-
-
-
-
-
-
-
+@login_required
+def dislike_post(request, post_id):
+    post = get_object_or_404(Post, id=post_id)
+    post.dislikes += 1
+    post.save()
+    return redirect('/newsfeed.htm/ + user.id')
 
 
 
